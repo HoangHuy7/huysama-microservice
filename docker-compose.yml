@@ -3,16 +3,6 @@ services:
     image: traefik:v3.4
     command:
       - --configFile=/etc/traefik/traefik.yml
-    #    command:
-    #      - --api.insecure=true
-    #      - --providers.docker=true
-    #      - --log.level=DEBUG             # ⬅️ thêm dòng này
-    #      - --accesslog=true              # ⬅️ và dòng này
-    #      - --providers.docker.exposedbydefault=false
-    #      - --providers.consulCatalog.endpoint.address=consul-discovery:8500
-    #      - --entrypoints.web.address=:80
-    #      - --entrypoints.websecure.address=:443
-    #      - --entrypoints.websecure.http.tls=true
     ports:
       - "80:80"
       - "8088:8080"

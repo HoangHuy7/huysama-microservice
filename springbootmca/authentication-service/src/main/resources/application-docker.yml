@@ -1,0 +1,40 @@
+my-app:
+  context-path: authentication-service
+server:
+  port: 4301
+spring:
+  config:
+    import: "optional:consul:"
+    fail-fast: false
+  application:
+    name: ${my-app.context-path}
+  cloud:
+    consul:
+      host: ${CONSUL_HOST:localhost}
+      port: ${CONSUL_PORT:8500}
+      discovery:
+        instanceId: ${my-app.context-path}:${random.value}
+        health-check-path: /actuator/health
+        health-check-interval: 10s
+        tags:
+          - traefik.enable=true
+
+          # Middleware dùng lại toàn hệ thống
+          - traefik.http.middlewares.auth-forward.forwardauth.address=http://authentication-service:4301/auth/verify
+          - traefik.http.middlewares.auth-forward.forwardauth.trustForwardHeader=true
+
+          # Định nghĩa service và router cho chính nó
+          - traefik.http.services.${my-app.context-path}.loadbalancer.server.port=${server.port}
+          - traefik.http.routers.${my-app.context-path}.rule=PathPrefix(`/${my-app.context-path}`)
+          - traefik.http.routers.${my-app.context-path}.entrypoints=http
+          - traefik.http.routers.${my-app.context-path}.middlewares=${my-app.context-path}-strip
+          - traefik.http.middlewares.${my-app.context-path}-strip.stripPrefix.prefixes=/${my-app.context-path}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always

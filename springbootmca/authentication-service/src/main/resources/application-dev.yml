@@ -1,0 +1,33 @@
+
+my-app:
+  context-path: authentication-service
+server:
+  port: 4301
+spring:
+  config:
+    import: "consul:"
+    fail-fast: false
+  application:
+    name: ${my-app.context-path}
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        instanceId: ${my-app.context-path}:${random.value}
+        health-check-path: /actuator/health
+        health-check-interval: 10s
+        tags:
+          - traefik.enable=true
+          - traefik.http.routers.${my-app.context-path}.rule=PathPrefix(`/${my-app.context-path}`)
+          - traefik.http.routers.${my-app.context-path}.entrypoints=http
+          - traefik.http.routers.${my-app.context-path}.middlewares=${my-app.context-path}-strip
+          - traefik.http.middlewares.${my-app.context-path}-strip.stripPrefix.prefixes=/${my-app.context-path}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always

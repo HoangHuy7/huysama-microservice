@@ -22,3 +22,10 @@ tls:
 providers:
   docker:
     exposedByDefault: false
+
+
+  consulCatalog:
+    endpoint:
+      address: "consul-discovery:8500"
+    prefix: "traefik"
+    exposedByDefault: true

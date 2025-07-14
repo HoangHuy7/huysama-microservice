@@ -1,0 +1,94 @@
+services:
+  traefik:
+    image: traefik:v3.4
+    command:
+      - --configFile=/etc/traefik/traefik.yml
+    #    command:
+    #      - --api.insecure=true
+    #      - --providers.docker=true
+    #      - --log.level=DEBUG             # ⬅️ thêm dòng này
+    #      - --accesslog=true              # ⬅️ và dòng này
+    #      - --providers.docker.exposedbydefault=false
+    #      - --providers.consulCatalog.endpoint.address=consul-discovery:8500
+    #      - --entrypoints.web.address=:80
+    #      - --entrypoints.websecure.address=:443
+    #      - --entrypoints.websecure.http.tls=true
+    ports:
+      - "80:80"
+      - "8088:8080"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./my-volumes/traefik/certs:/certs
+      - ./my-volumes/traefik/traefik.yml:/etc/traefik/traefik.yml
+    #    depends_on:
+    #      - consul-discovery
+    networks:
+      - huysama-network
+
+  consul-discovery:
+    image: consul:1.15
+    ports:
+      - "8500:8500"
+    networks:
+      - huysama-network
+    restart: unless-stopped
+
+  keycloak:
+    image: keycloak/keycloak:26.0.7
+    command:
+      - start-dev
+      - --hostname-strict=false
+      - --db=postgres
+      - --db-url=jdbc:postgresql://postgres/keycloak
+      - --db-username=admin
+      - --db-password=admin
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_PROXY_HEADERS: xforwarded
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.keycloak.rule=Host(`keycloak.localhost`)"
+      - "traefik.http.routers.keycloak.entrypoints=websecure"
+      - "traefik.http.routers.keycloak.tls=true"
+      - "traefik.http.services.keycloak.loadbalancer.server.port=8080"
+    ports:
+      - "9090:8080"
+    networks:
+      - huysama-network
+    depends_on:
+      - traefik
+      - postgres
+    restart: unless-stopped
+  postgres:
+    image: postgres:15.13
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    volumes:
+      - ./my-volumes/data/postgres:/var/lib/postgresql/data
+    #      - ./my-volumes/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - huysama-network
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "keycloak" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  whoami:
+    image: traefik/whoami
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`whoami.docker.localhost`)"
+    networks:
+      - huysama-network
+    restart: unless-stopped
+networks:
+  huysama-network:
+    driver: bridge

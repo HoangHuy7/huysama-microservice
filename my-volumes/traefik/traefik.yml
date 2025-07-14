@@ -1,0 +1,24 @@
+log:
+  level: DEBUG
+
+accessLog: {}
+
+api:
+  insecure: true
+
+entryPoints:
+  web:
+    address: ":80"
+  websecure:
+    address: ":443"
+
+tls:
+  stores:
+    default:
+      defaultCertificate:
+        certFile: "/certs/local.crt"
+        keyFile: "/certs/local.key"
+
+providers:
+  docker:
+    exposedByDefault: false

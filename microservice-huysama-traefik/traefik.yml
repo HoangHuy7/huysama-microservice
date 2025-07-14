@@ -7,7 +7,7 @@ api:
   insecure: true
 
 entryPoints:
-  web:
+  http:
     address: ":80"
   websecure:
     address: ":443"

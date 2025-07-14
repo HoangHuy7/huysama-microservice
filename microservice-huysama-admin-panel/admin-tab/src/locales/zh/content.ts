@@ -1,0 +1,16 @@
+export default {
+  articleTitle: 'Quản lý bài viết',
+  contentTitle: 'Quản lý nội dung',
+  clipboard: 'Bảng tạm',
+  clipboardMessage: 'Truyền "admin" vào nút sao chép',
+  richText: 'Trình soạn thảo văn bản',
+  threeTierStructure: 'Cấu trúc ba tầng',
+  virtualScroll: 'Cuộn ảo',
+  virtualScroll1: 'Danh sách cuộn ảo (10.000 mục)',
+  virtualScroll2: 'Bảng cuộn ảo (10.000 mục)',
+  watermark: 'Chữ ký bản quyền',
+  openWatermark: 'Bật chữ ký bản quyền',
+  hideWatermark: 'Ẩn chữ ký bản quyền',
+  nestedData: 'Dữ liệu lồng nhau',
+  sensitiveInfo: 'Lưu ý: Tiêu đề không được chứa thông tin nhạy cảm!',
+};

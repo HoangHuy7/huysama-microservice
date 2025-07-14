@@ -1,5 +1,5 @@
 my-app:
-  context-path: authentication-service
+  context-path: ${APP_CONTEXT_PATH:authentication-service}
 server:
   port: 4301
 spring:

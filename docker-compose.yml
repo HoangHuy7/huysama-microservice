@@ -95,6 +95,22 @@ services:
       - "traefik.http.routers.website.tls=true"
       - "traefik.http.services.website.loadbalancer.server.port=7001"
 
+  authentication-service:
+    build:
+      context: ./microservice-huysama-authentication-service
+      dockerfile: Dockerfile
+    environment:
+      - CONSUL_HOST=consul-discovery
+      - SPRING_PROFILES_ACTIVE=docker
+    ports:
+      - "4301:4301"
+    depends_on:
+      - consul-discovery
+      - traefik
+    networks:
+      - huysama-network
+#    restart: unless-stopped
+
 networks:
   huysama-network:
     driver: bridge

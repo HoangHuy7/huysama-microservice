@@ -96,9 +96,11 @@ services:
       - "traefik.http.services.website.loadbalancer.server.port=7001"
 
   authentication-service:
-    build:
-      context: ./microservice-huysama-authentication-service
-      dockerfile: Dockerfile
+#    build:
+#      context: ./microservice-huysama-authentication-service
+#      dockerfile: Dockerfile
+    image: authentication-service:latest
+    platform: linux/amd64
     environment:
       - CONSUL_HOST=consul-discovery
       - SPRING_PROFILES_ACTIVE=docker

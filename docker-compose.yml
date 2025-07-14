@@ -1,6 +1,7 @@
 services:
   traefik:
-    image: traefik:v3.4
+    #    image: traefik:v3.4
+    image: my-traefik
     command:
       - --configFile=/etc/traefik/traefik.yml
     ports:
@@ -12,8 +13,7 @@ services:
       - ./my-volumes/traefik/certs:/certs
       - ././microservice-huysama-traefik/traefik.yml:/etc/traefik/traefik.yml
       - ././dynamic:/etc/traefik/dynamic
-    #    depends_on:
-    #      - consul-discovery
+      - ./my-volumes/oauth2proxy/ca/minica.pem:/usr/local/share/ca-certificates/minica.crt
     networks:
       - huysama-network
 
@@ -80,26 +80,20 @@ services:
     networks:
       - huysama-network
     restart: unless-stopped
-  oauth2-proxy:
-    image: my-oauth2-proxy
-    ports:
-      - "4180:4180"
-    volumes:
-      - ./my-volumes/oauth2proxy/ca:/etc/ssl/certs/minica
-    depends_on:
-      - keycloak
-      - traefik
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.oauth2proxy.rule=Host(`auth.localtest.me`)"
-      - "traefik.http.routers.oauth2proxy.entrypoints=websecure"
-      - "traefik.http.routers.oauth2proxy.tls=true"
-      - "traefik.http.services.oauth2proxy.loadbalancer.server.port=4180"
-    extra_hosts:
-      - "keycloak.localhost:host-gateway"
+  website:
+    build:
+      context: ./microservice-huysama-admin-panel/admin-tab
+      dockerfile: Dockerfile
     networks:
       - huysama-network
-    restart: unless-stopped
+    ports:
+      - "7001:7001"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.website.rule=Host(`website.localtest.me`)"
+      - "traefik.http.routers.website.entrypoints=websecure"
+      - "traefik.http.routers.website.tls=true"
+      - "traefik.http.services.website.loadbalancer.server.port=7001"
 
 networks:
   huysama-network:

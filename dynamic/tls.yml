@@ -1,0 +1,6 @@
+tls:
+  certificates:
+    - certFile: "/certs/local.crt"
+      keyFile: "/certs/local.key"
+    - certFile: "/certs/keycloak.localhost/local.crt"
+      keyFile: "/certs/keycloak.localhost/local.key"

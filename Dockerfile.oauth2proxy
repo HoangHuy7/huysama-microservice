@@ -1,0 +1,23 @@
+FROM alpine:3.19
+
+# Cài các công cụ cần thiết
+RUN apk add --no-cache ca-certificates curl
+
+# Copy CA minica.pem
+COPY ./my-volumes/oauth2proxy/ca/minica.pem /usr/local/share/ca-certificates/minica.crt
+
+# Cập nhật trusted CA
+RUN update-ca-certificates
+
+# Tải oauth2-proxy binary (phiên bản tương thích)
+RUN curl -L https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v7.6.0/oauth2-proxy-v7.6.0.linux-amd64.tar.gz | tar zx && \
+    mv oauth2-proxy-v7.6.0.linux-amd64/oauth2-proxy /usr/local/bin/oauth2-proxy && \
+    chmod +x /usr/local/bin/oauth2-proxy && \
+    rm -rf oauth2-proxy-v7.6.0.linux-amd64
+
+# Tạo thư mục config
+COPY ./my-volumes/oauth2proxy/config/oauth2-proxy.cfg /etc/oauth2-proxy/oauth2-proxy.cfg
+
+EXPOSE 4180
+
+CMD ["/usr/local/bin/oauth2-proxy", "--config", "/etc/oauth2-proxy/oauth2-proxy.cfg"]

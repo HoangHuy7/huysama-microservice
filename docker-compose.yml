@@ -11,6 +11,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./my-volumes/traefik/certs:/certs
       - ././microservice-huysama-traefik/traefik.yml:/etc/traefik/traefik.yml
+      - ././dynamic:/etc/traefik/dynamic
     #    depends_on:
     #      - consul-discovery
     networks:
@@ -79,6 +80,27 @@ services:
     networks:
       - huysama-network
     restart: unless-stopped
+  oauth2-proxy:
+    image: my-oauth2-proxy
+    ports:
+      - "4180:4180"
+    volumes:
+      - ./my-volumes/oauth2proxy/ca:/etc/ssl/certs/minica
+    depends_on:
+      - keycloak
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.oauth2proxy.rule=Host(`auth.localtest.me`)"
+      - "traefik.http.routers.oauth2proxy.entrypoints=websecure"
+      - "traefik.http.routers.oauth2proxy.tls=true"
+      - "traefik.http.services.oauth2proxy.loadbalancer.server.port=4180"
+    extra_hosts:
+      - "keycloak.localhost:host-gateway"
+    networks:
+      - huysama-network
+    restart: unless-stopped
+
 networks:
   huysama-network:
     driver: bridge

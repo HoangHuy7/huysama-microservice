@@ -20,7 +20,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./my-volumes/traefik/certs:/certs
-      - ./my-volumes/traefik/traefik.yml:/etc/traefik/traefik.yml
+      - ././microservice-huysama-traefik/traefik.yml:/etc/traefik/traefik.yml
     #    depends_on:
     #      - consul-discovery
     networks:

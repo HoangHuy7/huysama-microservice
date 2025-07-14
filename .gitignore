@@ -1,0 +1,42 @@
+# Logs
+logs/
+*.log
+
+# Dependency directories
+node_modules/
+target/
+dist/
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+*.db
+*.sqlite
+
+# Docker
+**/.env
+.env
+.env.local
+docker-compose.override.yml
+
+# Consul config (if not versioned)
+my-volumes
+
+# Secrets (if any)
+secrets.*
+*.pem
+*.key
+*.crt
+
+# System artifacts
+*.bak
+*.swp
+
+

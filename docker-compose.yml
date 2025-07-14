@@ -82,7 +82,7 @@ services:
     restart: unless-stopped
   website:
     build:
-      context: ./microservice-huysama-admin-panel/admin-tab
+      context: ./microservice-huysama-admin-panel
       dockerfile: Dockerfile
     networks:
       - huysama-network

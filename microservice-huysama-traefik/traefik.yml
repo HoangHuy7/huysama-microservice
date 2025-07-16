@@ -1,7 +1,7 @@
 log:
   level: DEBUG
 
-accessLog: {}
+accessLog: { }
 
 api:
   insecure: true
@@ -9,9 +9,10 @@ api:
 entryPoints:
   http:
     address: ":80"
-  websecure:
+  https:
     address: ":443"
-
+  admin:
+    address: ":8082"
 providers:
   docker:
     exposedByDefault: false

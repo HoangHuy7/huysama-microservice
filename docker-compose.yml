@@ -1,12 +1,12 @@
 services:
   traefik:
-    #    image: traefik:v3.4
-    image: my-traefik
+    image: traefik:v3.4
     command:
       - --configFile=/etc/traefik/traefik.yml
     ports:
       - "80:80"
       - "8088:8080"
+      - "8082:8082"
       - "443:443"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -41,7 +41,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.keycloak.rule=Host(`keycloak.localhost`)"
-      - "traefik.http.routers.keycloak.entrypoints=websecure"
+      - "traefik.http.routers.keycloak.entrypoints=https"
       - "traefik.http.routers.keycloak.tls=true"
       - "traefik.http.services.keycloak.loadbalancer.server.port=8080"
     ports:
@@ -88,11 +88,17 @@ services:
       - huysama-network
     ports:
       - "7001:7001"
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.http.routers.website.rule=Host(`website.localtest.me`)"
+#      - "traefik.http.routers.website.entrypoints=https"
+#      - "traefik.http.routers.website.tls=true"
+#      - "traefik.http.services.website.loadbalancer.server.port=7001"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.website.rule=Host(`website.localtest.me`)"
-      - "traefik.http.routers.website.entrypoints=websecure"
       - "traefik.http.routers.website.tls=true"
+      - "traefik.http.routers.website.rule=Host(`website.localtest.me`)"
+      - "traefik.http.routers.website.entrypoints=admin"              # ✅ thay vì https
       - "traefik.http.services.website.loadbalancer.server.port=7001"
 
   authentication-service:

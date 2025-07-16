@@ -6,5 +6,3 @@ tls:
       keyFile: "/certs/keycloak.localhost/local.key"
     - certFile: "/certs/website.localtest.me/local.crt"
       keyFile: "/certs/website.localtest.me/local.key"
-    - certFile: "/certs/auth.localtest.me/local.crt"
-      keyFile: "/certs/auth.localtest.me/local.key"

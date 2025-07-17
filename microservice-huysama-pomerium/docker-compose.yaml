@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  pomerium:
+    image: pomerium/pomerium:latest
+    ports:
+      - "443:443"
+    volumes:
+      - ./config.yaml:/pomerium/config.yaml:ro
+    environment:
+      - POMERIUM_CONFIG=/pomerium/config.yaml
+    restart: always
+
+  verify:
+    image: pomerium/verify:latest
+    environment:
+      JWKS_ENDPOINT: https://pomerium/.well-known/pomerium/jwks.json
+#      JWKS_ENDPOINT: https://authenticate.localhost.pomerium.io/.well-known/pomerium/jwks.json
+      JWKS_INSECURE_SKIP_VERIFY: true
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-storage:/var/lib/grafana
+
+volumes:
+  grafana-storage:

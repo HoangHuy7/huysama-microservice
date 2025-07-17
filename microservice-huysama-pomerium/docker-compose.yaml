@@ -10,13 +10,15 @@ services:
     environment:
       - POMERIUM_CONFIG=/pomerium/config.yaml
     restart: always
+    networks:
+      - pomnet
 
   verify:
     image: pomerium/verify:latest
     environment:
       JWKS_ENDPOINT: https://pomerium/.well-known/pomerium/jwks.json
-#      JWKS_ENDPOINT: https://authenticate.localhost.pomerium.io/.well-known/pomerium/jwks.json
-      JWKS_INSECURE_SKIP_VERIFY: true
+    networks:
+      - pomnet
 
   grafana:
     image: grafana/grafana:latest
@@ -24,6 +26,11 @@ services:
       - "3000:3000"
     volumes:
       - grafana-storage:/var/lib/grafana
+    networks:
+      - pomnet
 
 volumes:
   grafana-storage:
+
+networks:
+  pomnet:

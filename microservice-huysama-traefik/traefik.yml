@@ -13,6 +13,19 @@ entryPoints:
     address: ":443"
   admin:
     address: ":8082"
+metrics:
+  prometheus:
+    entryPoint: http         # hoặc bỏ dòng này đi là mặc định
+    addEntryPointsLabels: true
+    addServicesLabels: true
+
+
+tracing:
+  serviceName: traefik # Tên của dịch vụ Traefik sẽ xuất hiện trong Jaeger UI
+  otlp:
+    grpc:
+      endpoint: jaeger:4317 # Trỏ đến tên dịch vụ Jaeger trong Docker Compose và cổng gRPC mặc định của OTLP
+      insecure: true # Sử dụng kết nối không an toàn vì bạn đang chạy nội bộ Docker mà không có TLS giữa Traefik và Jaeger
 providers:
   docker:
     exposedByDefault: false

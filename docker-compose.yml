@@ -3,6 +3,8 @@ services:
     image: traefik:v3.4
     command:
       - --configFile=/etc/traefik/traefik.yml
+    environment:
+      - OTEL_PROPAGATORS=b3,jaeger
     ports:
       - "80:80"
       - "8088:8080"
@@ -14,6 +16,8 @@ services:
       - ././microservice-huysama-traefik/traefik.yml:/etc/traefik/traefik.yml
       - ././dynamic:/etc/traefik/dynamic
       - ./my-volumes/oauth2proxy/ca/minica.pem:/usr/local/share/ca-certificates/minica.crt
+    depends_on:
+      - jaeger
     networks:
       - huysama-network
 
@@ -118,7 +122,17 @@ services:
     networks:
       - huysama-network
 #    restart: unless-stopped
-
+  jaeger:
+    image: jaegertracing/all-in-one:1.56
+    ports:
+      - "16686:16686"    # Jaeger UI
+      - "6831:6831/udp"  # Jaeger agent (UDP, thường cho client libs cũ hơn)
+      - "5778:5778"      # Sampling config
+      # OpenTelemetry Collector mặc định dùng các cổng sau:
+      - "4317:4317"      # OTLP gRPC receiver
+      - "4318:4318"      # OTLP HTTP receiver
+    networks:
+      - huysama-network
 networks:
   huysama-network:
     driver: bridge

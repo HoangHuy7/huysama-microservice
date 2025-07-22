@@ -1,0 +1,6 @@
+
+minikube start --driver=docker
+minikube tunnel
+kubectl apply -f traefik-service.yaml
+kubectl get svc traefik
+

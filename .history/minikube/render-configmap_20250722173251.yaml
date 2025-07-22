@@ -1,0 +1,12 @@
+- hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Render configmap template
+      template:
+        src: minikube/base/configmap.yaml.j2
+        dest: minikube/base/configmap.yaml
+      vars:
+        app_name: nginx
+        namespace: dev
+        api_url: "https://api.myapp.com"
+        domain_name: "localtest.me"

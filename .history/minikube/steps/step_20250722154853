@@ -1,0 +1,4 @@
+
+minikube start --driver=docker
+minikube tunnel
+ 

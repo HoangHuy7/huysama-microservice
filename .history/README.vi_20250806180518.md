@@ -172,7 +172,7 @@ microservice-huysama/
 ---
 
 ## 📞 Hỗ Trợ
-- **Email**: huy.trannguyenhoang7@gmail.com
+- **Email**: huy.trannguyenhoang7
 - **GitHub Issues**: [Tạo Issue](#)
 
 ---
